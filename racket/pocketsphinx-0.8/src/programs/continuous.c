@@ -51,6 +51,9 @@
  *   - Uses audio library; can be replaced with an equivalent custom library.
  */
 
+//I commented out all printf statements except the ones that print the actual word recognized,
+//also modified that printf to print just the word and nothing extra for easier parsing
+
 #include <stdio.h>
 #include <string.h>
 
@@ -289,7 +292,9 @@ recognize_from_microphone()
                  * No speech data available; check current timestamp with most recent
                  * speech to see if more than 1 sec elapsed.  If so, end of utterance.
                  */
-                if ((cont->read_ts - ts) > DEFAULT_SAMPLES_PER_SEC/1000)
+                  //divided DEFAULT_SAMPLES_PER_SEC by a factor because my commands are short,  
+                  //dont need to wait for an entire second of silence
+                if ((cont->read_ts - ts) > DEFAULT_SAMPLES_PER_SEC/1000) 
                     break;
             }
             else {
@@ -352,7 +357,7 @@ main(int argc, char *argv[])
     
     char const *cfg;
     
-    freopen("/dev/null", "w", stderr);
+    freopen("/dev/null", "w", stderr);//close stderr dont want that as output
     if (argc == 2) {
         config = cmd_ln_parse_file_r(NULL, cont_args_def, argv[1], TRUE);
     }
