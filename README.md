@@ -11,6 +11,7 @@ will be sent to a racket program that preprocesses the words and sends them as r
 
 The arduino will then take those commands and convert them to PWM values to send to an RC car's ESC and servor motor.
 
-//remember to add accelerometer to measure speed and display it in a graph using the racket gui lib
-//remember to add sonar sensor and display in gui
+**remember to use a rotary encoder on the wheel or gps shield  to measure speed and display it in a graph using the racket gui lib or maybe use a  Hall effect sensor? http://playground.arduino.cc/Code/HallEffect
+
+**remember to add sonar sensor and display in gui
 
