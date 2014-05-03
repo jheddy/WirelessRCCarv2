@@ -1,0 +1,57 @@
+
+
+#lang racket
+
+;;try to make it faster. maybe modify source for sphinx?
+
+(define-values (c-in c-out) (tcp-connect "192.168.43.9" 2000)) 
+;;(define in (open-input-file "/tmp/capture.txt"))
+(define-values (sp out in e) (subprocess #f #f #f "/home/jheddy/pocketsphinx-0.8/src/programs/pocketsphinx_continuous" 
+                           "-lm" "/home/jheddy/Documents/dictionary/2024.lm" "-dict" "/home/jheddy/Documents/dictionary/2024.dic"          
+                          ))
+
+(define-values (go stop left right center) (values 1480 1515 150 30 92))
+ 
+(define (process-input str)
+  (if (pair? (string-split str)) (set! str (car(string-split str))) (set! str ""))
+  (cond ((string=? (string-upcase str) "GO")
+          (printf "setting speed to GO\n")
+          (display (string-append (number->string center) "," (number->string go) "\n" ) c-out)
+          (flush-output c-out)
+          )
+        ( (string=? (string-upcase str) "LEFT")
+          (printf "I'm going LEFT\n")
+          (display (string-append (number->string left) "," "0" "\n") c-out)
+          (flush-output c-out)
+          )
+        ( (string=? (string-upcase str) "RIGHT")
+          (printf "I'm going RIGHT\n")
+          (display (string-append (number->string right) "," "0" "\n") c-out)
+          (flush-output c-out)
+          )
+        ( (string=? (string-upcase str) "STOP")
+          (printf "I STOPPED\n")
+          (display (string-append (number->string center) "," (number->string stop) "\n") c-out)
+          (flush-output c-out)
+          )
+        (else
+         (printf "Sorry I cannot understand: ~a\n" str)
+         (flush-output)
+         )
+  )
+  
+  )
+ 
+(define (read-loop)
+  (define str (read-line out))
+  (unless (eof-object? str)
+               (process-input str)
+    )
+  (read-loop))
+ 
+(define (start-everything)
+  (read-loop)
+  )
+ 
+(start-everything)
+
